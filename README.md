@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌾 TanimBuddy
 
-## Getting Started
+**TanimBuddy** is an AI-powered, SMS-based agricultural advisory system designed to support smallholder Filipino farmers using basic mobile phones. It provides personalized, localized, and timely farming recommendations in native dialects — no smartphone or internet required.
 
-First, run the development server:
+Powered by a lightweight AI engine called **BantayANI** (Artificial Narrow Intelligence), TanimBuddy brings essential farming knowledge straight to the farmer’s inbox via text. It acts as a digital *barangay agri aide* — always available, kind, and practical.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📦 Repositories
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This project is split into two core repositories:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### [`tanimbuddy`](https://github.com/siratimlabs/tanimbuddy)
+> Frontend and SMS I/O layer  
+Built with **Next.js**, **Express.js**, and **Twilio SDK**
 
-## Learn More
+Responsibilities:
+- Receive and respond to SMS messages
+- Format AI replies for SMS delivery
+- Log farmer interactions
+- Admin dashboard for monitoring and alerts
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### [`bantayani`](https://github.com/siratimlabs/bantayani)
+> AI + Rules Engine  
+Built with **FastAPI** or **Express.js**, depending on language used
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Responsibilities:
+- Process natural language queries
+- Classify intents and apply decision logic
+- Fetch weather, crop calendars, and pest alerts
+- Localize messages using translation APIs
+- Return short, actionable responses
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🚀 Key Features
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- 📱 **2-Way SMS Support**  
+  Receive and respond to farmer queries via Twilio SMS
+
+- 🌦 **Localized AI Decisions**  
+  Combine NLP, rules, and real-time weather data to provide meaningful advice
+
+- 🧠 **Minimal Input, Maximum Clarity**  
+  Infer intent from short texts (1–5 words) in native languages
+
+- 🗣 **Multilingual Support**  
+  Tagalog, Cebuano, Ilocano (via translation API)
+
+- 🧾 **Admin Dashboard**  
+  View farmer interactions, send broadcast alerts
+
+- 💡 **Farmer-Centric Tone**  
+  Trustworthy, clear, kind, and always action-oriented
+
+---
+
+## 🛠️ Getting Started
+
+To set up the project locally or in your dev environment, please refer to the [**Getting Started Guide**](https://github.com/siratimlabs/tanimbuddy/wiki/Getting-Started) in the project Wiki.
+
+---
+
+## 🤝 Contributing
+
+We welcome community involvement! To contribute to TanimBuddy, see our [**Contribution Guidelines**](https://github.com/siratimlabs/tanimbuddy/wiki/Contributing) for full instructions on setup, issue tracking, and pull request workflows.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.  
+See the full [**LICENSE.md**](./LICENSE.md) for details.
+
+---
+
+## 📫 Contact
+
+For partnerships, field testing, or integration inquiries, please email:  
+**siratimlabs@gmail.com**  
+Or open an issue on the main repo.
+
+---
+
+## 🌍 Vision
+
+**TanimBuddy** aims to empower millions of farmers through accessible technology — no apps, no intermediaries — just clear advice when it matters most. From seed to harvest, knowledge is now just a text away.
