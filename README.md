@@ -76,7 +76,7 @@ All content, including source code, documentation, and assets, is **proprietary*
 
 You may **view** the code, but you **may not** use, copy, modify, distribute, or create derivative works without **written permission** from SIRATIM.
 
-See the [LICENSE](./LICENSE) file for full details.
+See the [LICENSE](./LICENSE.md) file for full details.
 
 ---
 
