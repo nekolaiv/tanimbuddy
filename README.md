@@ -69,10 +69,14 @@ We welcome community involvement! To contribute to TanimBuddy, see our [**Contri
 
 ---
 
-## 📄 License
+## ⚠️ License Notice
+This repository is publicly visible for **demonstration and reference purposes only**.
 
-This project is licensed under the MIT License.  
-See the full [**LICENSE.md**](./LICENSE.md) for details.
+All content, including source code, documentation, and assets, is **proprietary** and protected under the **TanimBuddy Proprietary License** by SIRATIM.
+
+You may **view** the code, but you **may not** use, copy, modify, distribute, or create derivative works without **written permission** from SIRATIM.
+
+See the [LICENSE](./LICENSE) file for full details.
 
 ---
 
