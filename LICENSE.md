@@ -1,5 +1,5 @@
 # TanimBuddy Proprietary License
-Version 1.0 — February 2025
+Version 1.0 — August 2025
 
 Copyright © 2025 SIRATIM. All rights reserved.
 
