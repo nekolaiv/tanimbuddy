@@ -1,0 +1,16 @@
+{
+  "name": "TanimBuddy Dev",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "frontend",
+  "workspaceFolder": "/app",
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/bash",
+    "editor.formatOnSave": true
+  },
+  "extensions": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss"
+  ],
+  "remoteUser": "node"
+}
