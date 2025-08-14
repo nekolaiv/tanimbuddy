@@ -7,6 +7,7 @@ import { generateCropAdvice } from './crop-advisor';
 import { generateWeatherAlert } from './weather-advisor';
 import { localizeMesage } from './localizer';
 import { detectLanguage, SupportedLanguage } from './language-detector';
+import { DatabaseService } from '@/lib/database';
 
 export interface BantayANIRequest {
   message: string;
@@ -36,6 +37,13 @@ export class BantayANI {
     console.log(`🧠 BantayANI processing: "${message}" from ${phoneNumber}`);
     
     try {
+      // Log inbound message
+      await DatabaseService.logMessage({
+        phoneNumber,
+        direction: 'inbound',
+        content: message,
+      });
+
       // Step 1: Detect language (Tagalog, Cebuano, Ilocano, English)
       const language = detectLanguage(message);
       console.log(`🗣️ Detected language: ${language}`);
@@ -86,7 +94,7 @@ export class BantayANI {
       // Step 4: Localize and optimize for SMS (160 char limit awareness)
       const localizedResponse = await localizeMesage(response, language);
       
-      return {
+      const aiResponse: BantayANIResponse = {
         reply: localizedResponse,
         intent: intentResult.intent,
         confidence: intentResult.confidence,
@@ -94,8 +102,39 @@ export class BantayANI {
         metadata: metadata
       };
       
+      // Log outbound message
+      await DatabaseService.logMessage({
+        phoneNumber,
+        direction: 'outbound',
+        content: localizedResponse,
+        intent: intentResult.intent,
+        confidence: intentResult.confidence,
+        language: language,
+        metadata: metadata,
+      });
+      
+      // Update farmer language preference
+      await DatabaseService.findOrCreateFarmer(phoneNumber, { language });
+      
+      return aiResponse;
+      
     } catch (error) {
       console.error('BantayANI Error:', error);
+      
+      // Log error
+      await DatabaseService.logMessage({
+        phoneNumber,
+        direction: 'outbound',
+        content: 'System error occurred',
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+      
+      // System log
+      await DatabaseService.logSystemEvent('error', 'ai', 'BantayANI processing failed', {
+        phoneNumber,
+        message,
+        error: error instanceof Error ? error.message : error,
+      });
       
       // Fallback response in detected language
       const language = detectLanguage(message);
