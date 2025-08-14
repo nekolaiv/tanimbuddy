@@ -1,0 +1,107 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Farmer {
+  id          String   @id @default(cuid())
+  phoneNumber String   @unique
+  name        String?
+  location    String?
+  language    String   @default("tagalog") // tagalog, cebuano, ilocano, english
+  crops       String?  // JSON array of crops they grow
+  registered  DateTime @default(now())
+  lastActive  DateTime @default(now())
+  isActive    Boolean  @default(true)
+  
+  // Relationships
+  messages    Message[]
+  alerts      AlertRecipient[]
+  
+  @@map("farmers")
+}
+
+model Message {
+  id          String   @id @default(cuid())
+  farmerId    String
+  direction   String   // 'inbound' | 'outbound'
+  content     String
+  intent      String?  // BantayANI detected intent
+  confidence  Float?   // AI confidence score
+  language    String?  // detected language
+  metadata    String?  // JSON metadata from BantayANI
+  processed   Boolean  @default(false)
+  error       String?  // error message if processing failed
+  timestamp   DateTime @default(now())
+  
+  // Relationships
+  farmer      Farmer   @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+  
+  @@map("messages")
+}
+
+model Alert {
+  id          String   @id @default(cuid())
+  title       String
+  content     String
+  alertType   String   // 'weather', 'pest', 'market', 'planting', 'general'
+  urgency     String   @default("medium") // 'low', 'medium', 'high'
+  targetCrops String?  // JSON array of crops this alert applies to
+  targetRegions String? // JSON array of regions/locations
+  language    String   @default("tagalog")
+  createdBy   String   // admin user who created it
+  createdAt   DateTime @default(now())
+  scheduledAt DateTime? // for scheduled alerts
+  sentAt      DateTime? // when broadcast was sent
+  status      String   @default("draft") // 'draft', 'scheduled', 'sent', 'cancelled'
+  
+  // Relationships
+  recipients  AlertRecipient[]
+  
+  @@map("alerts")
+}
+
+model AlertRecipient {
+  id        String   @id @default(cuid())
+  alertId   String
+  farmerId  String
+  sentAt    DateTime?
+  delivered Boolean  @default(false)
+  error     String?
+  
+  // Relationships
+  alert     Alert    @relation(fields: [alertId], references: [id], onDelete: Cascade)
+  farmer    Farmer   @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+  
+  @@unique([alertId, farmerId])
+  @@map("alert_recipients")
+}
+
+model SystemLog {
+  id        String   @id @default(cuid())
+  level     String   // 'info', 'warn', 'error', 'debug'
+  category  String   // 'sms', 'ai', 'system', 'webhook'
+  message   String
+  metadata  String?  // JSON additional data
+  timestamp DateTime @default(now())
+  
+  @@map("system_logs")
+}
+
+model Analytics {
+  id          String   @id @default(cuid())
+  date        DateTime @db.Date
+  metric      String   // 'messages_sent', 'messages_received', 'farmers_active', etc.
+  value       Int
+  metadata    String?  // JSON additional breakdown
+  
+  @@unique([date, metric])
+  @@map("analytics")
+}
