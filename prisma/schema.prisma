@@ -97,7 +97,7 @@ model SystemLog {
 
 model Analytics {
   id          String   @id @default(cuid())
-  date        DateTime @db.Date
+  date        DateTime
   metric      String   // 'messages_sent', 'messages_received', 'farmers_active', etc.
   value       Int
   metadata    String?  // JSON additional breakdown
