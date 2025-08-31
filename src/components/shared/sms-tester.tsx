@@ -60,7 +60,10 @@ export default function SMSTester() {
         <div className="w-8 h-8 gradient-bg rounded-lg flex items-center justify-center">
           <span className="text-white text-sm">📱</span>
         </div>
-        <h3 className="text-xl font-semibold text-gray-900">SMS Tester</h3>
+        <div>
+          <h3 className="text-xl font-semibold text-gray-900">SMS Tester</h3>
+          <p className="text-sm text-gray-500">Send real SMS to test the system</p>
+        </div>
       </div>
       
       <div className="space-y-6">
@@ -93,7 +96,7 @@ export default function SMSTester() {
               <button
                 key={index}
                 onClick={() => setMessage(sample)}
-                className="text-left p-2 text-xs bg-gradient-to-r from-green-50 to-blue-50 border border-green-100 rounded-lg hover:from-green-100 hover:to-blue-100 transition-all duration-200 text-gray-700"
+                className="text-left p-3 text-sm bg-gradient-to-r from-green-50 to-blue-50 border border-green-100 rounded-xl hover:from-green-100 hover:to-blue-100 transition-all duration-200 text-gray-700"
               >
                 &quot;{sample}&quot;
               </button>
@@ -199,10 +202,10 @@ export default function SMSTester() {
         <div className="flex items-start gap-3">
           <span className="text-lg mt-0.5">💡</span>
           <div>
-            <p className="text-sm font-medium text-blue-800 mb-1">Test BantayANI AI</p>
+            <p className="text-sm font-medium text-blue-800 mb-1">Real SMS Testing</p>
             <p className="text-xs text-blue-600">
-              Send a farming question to see how our AI responds. 
-              Try asking in Tagalog, Cebuano, or English!
+              This connects to your SMS API to send actual messages. 
+              Test BantayANI responses by asking farming questions!
             </p>
           </div>
         </div>
