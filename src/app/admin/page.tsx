@@ -91,7 +91,7 @@ export default function AdminDashboard() {
             <div className="bg-white p-6 rounded-lg border">
               <div className="flex items-center">
                 <div className="p-2 bg-blue-100 rounded-lg">
-                  <span className="text-2xl">👨‍🌾</span>
+                  <span className="text-2xl">🤠</span>
                 </div>
                 <div className="ml-4">
                   <p className="text-sm text-gray-600">Total Farmers</p>
@@ -201,7 +201,7 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Quick Actions */}
+        {/* Quick Actions
         <div className="bg-white p-6 rounded-lg border">
           <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -222,7 +222,7 @@ export default function AdminDashboard() {
               <span className="text-sm">System Health</span>
             </Button>
           </div>
-        </div>
+        </div> */}
 
         {/* Recent Activity Preview */}
         <div className="bg-white p-6 rounded-lg border">
