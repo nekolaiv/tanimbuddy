@@ -1,109 +1,150 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { requireAuth } from '@/lib/auth';
-import { db } from '@/lib/database';
 import { semaphoreClient } from '@/lib/semaphore';
 
-interface BroadcastRequest {
-  title: string;
-  content: string;
-  alertType: 'weather' | 'pest' | 'market' | 'planting' | 'general';
-  urgency: 'low' | 'medium' | 'high';
-  targetCrops?: string[];
-  targetRegions?: string[];
-  language: 'tagalog' | 'cebuano' | 'ilocano' | 'english';
-  sendImmediately: boolean;
+interface BulkBroadcastRequest {
+  phoneNumbers: string[];
+  message: string;
+  template?: {
+    id: string;
+    title: string;
+    language: string;
+    category: string;
+    urgency: string;
+  };
 }
 
-async function handler(request: NextRequest) {
+interface BroadcastResult {
+  phoneNumber: string;
+  status: 'success' | 'failed';
+  messageId?: string;
+  error?: string;
+  timestamp: string;
+}
+
+export async function POST(req: NextRequest) {
   try {
-    const data: BroadcastRequest = await request.json();
-    
-    // Create alert record
-    const alert = await db.alert.create({
-      data: {
-        title: data.title,
-        content: data.content,
-        alertType: data.alertType,
-        urgency: data.urgency,
-        targetCrops: data.targetCrops ? JSON.stringify(data.targetCrops) : null,
-        targetRegions: data.targetRegions ? JSON.stringify(data.targetRegions) : null,
-        language: data.language,
-        createdBy: 'admin', // TODO: Add proper admin user system
-        status: data.sendImmediately ? 'sent' : 'draft',
-        sentAt: data.sendImmediately ? new Date() : null,
-      }
-    });
-    
-    if (data.sendImmediately) {
-      // Get target farmers
-      const farmers = await db.farmer.findMany({
-        where: {
-          isActive: true,
-          language: data.language, // Filter by language
-        }
-      });
-      
-      // Send broadcast
-      let successCount = 0;
-      let errorCount = 0;
-      
-      for (const farmer of farmers) {
-        try {
-          await semaphoreClient.sendSMS({
-            number: farmer.phoneNumber,
-            message: data.content,
-          });
-          
-          // Log successful delivery
-          await db.alertRecipient.create({
-            data: {
-              alertId: alert.id,
-              farmerId: farmer.id,
-              sentAt: new Date(),
-              delivered: true,
-            }
-          });
-          
-          successCount++;
-        } catch (error) {
-          // Log failed delivery
-          await db.alertRecipient.create({
-            data: {
-              alertId: alert.id,
-              farmerId: farmer.id,
-              delivered: false,
-              error: error instanceof Error ? error.message : 'Unknown error',
-            }
-          });
-          
-          errorCount++;
-        }
-      }
-      
-      return NextResponse.json({
-        success: true,
-        alertId: alert.id,
-        broadcast: {
-          totalFarmers: farmers.length,
-          successCount,
-          errorCount,
-        }
-      });
+    const body: BulkBroadcastRequest = await req.json();
+    const { phoneNumbers, message, template } = body;
+
+    // Validate input
+    if (!phoneNumbers || !Array.isArray(phoneNumbers) || phoneNumbers.length === 0) {
+      return NextResponse.json(
+        { success: false, error: 'Phone numbers array is required' },
+        { status: 400 }
+      );
     }
-    
+
+    if (!message || message.trim().length === 0) {
+      return NextResponse.json(
+        { success: false, error: 'Message content is required' },
+        { status: 400 }
+      );
+    }
+
+    // Validate phone numbers format (basic validation)
+    const invalidNumbers = phoneNumbers.filter(phone => {
+      const cleanPhone = phone.replace(/\s+/g, '');
+      const philippinePattern = /^(\+63|63|0)?9\d{9}$/;
+      return !philippinePattern.test(cleanPhone);
+    });
+
+    if (invalidNumbers.length > 0) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: 'Invalid phone numbers detected',
+          invalidNumbers: invalidNumbers
+        },
+        { status: 400 }
+      );
+    }
+
+    // Send SMS to each number
+    const results: BroadcastResult[] = [];
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const phoneNumber of phoneNumbers) {
+      try {
+        // Format phone number for API
+        const formattedPhone = formatPhoneNumber(phoneNumber);
+        
+        // Send via Semaphore using the same endpoint as code #1
+        const smsResult = await semaphoreClient.sendSMS({
+          number: formattedPhone,
+          message: message,
+          sendername: 'TanimBuddy', // Optional sender name
+        });
+
+        console.log(`📤 Broadcast SMS sent to ${formattedPhone}:`, smsResult);
+
+        const result: BroadcastResult = {
+          phoneNumber: formattedPhone,
+          status: 'success',
+          messageId: smsResult.message_id.toString(),
+          timestamp: new Date().toISOString(),
+        };
+
+        results.push(result);
+        successCount++;
+
+      } catch (error) {
+        console.error(`❌ SMS failed for ${phoneNumber}:`, error);
+        
+        const result: BroadcastResult = {
+          phoneNumber: phoneNumber,
+          status: 'failed',
+          error: error instanceof Error ? error.message : 'Unknown error',
+          timestamp: new Date().toISOString(),
+        };
+
+        results.push(result);
+        errorCount++;
+      }
+
+      // Small delay to prevent rate limiting (optional)
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
+    // Return comprehensive results
     return NextResponse.json({
       success: true,
-      alertId: alert.id,
-      status: 'draft',
+      broadcast: {
+        totalSent: phoneNumbers.length,
+        successCount,
+        errorCount,
+        successRate: ((successCount / phoneNumbers.length) * 100).toFixed(1),
+        template: template || null,
+      },
+      results: results,
+      summary: {
+        message: message,
+        characterCount: message.length,
+        timestamp: new Date().toISOString(),
+      }
     });
-    
+
   } catch (error) {
-    console.error('Broadcast API error:', error);
+    console.error('Bulk Broadcast API error:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to create broadcast' },
+      { 
+        success: false, 
+        error: 'Failed to process broadcast request',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     );
   }
 }
 
-export const POST = requireAuth(handler);
+// Helper function to format phone numbers consistently
+function formatPhoneNumber(phone: string): string {
+  const cleanPhone = phone.replace(/\s+/g, '');
+  
+  if (cleanPhone.startsWith('+63')) return cleanPhone;
+  if (cleanPhone.startsWith('63')) return '+' + cleanPhone;
+  if (cleanPhone.startsWith('09')) return '+63' + cleanPhone.substring(1);
+  if (cleanPhone.startsWith('9')) return '+639' + cleanPhone.substring(1);
+  
+  return cleanPhone;
+}
