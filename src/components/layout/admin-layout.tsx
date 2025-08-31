@@ -66,7 +66,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { name: 'Dashboard', href: '/admin', icon: '📊', color: 'from-blue-500 to-blue-600' },
     { name: 'Messages', href: '/admin/messages', icon: '💬', color: 'from-green-500 to-green-600' },
     { name: 'Broadcast', href: '/admin/broadcast', icon: '📢', color: 'from-purple-500 to-purple-600' },
-    { name: 'Farmers', href: '/admin/farmers', icon: '👨‍🌾', color: 'from-amber-500 to-amber-600' },
+    { name: 'Farmers', href: '/admin/farmers', icon: '🤠', color: 'from-amber-500 to-amber-600' },
     { name: 'Analytics', href: '/admin/analytics', icon: '📈', color: 'from-pink-500 to-pink-600' },
     { name: 'System', href: '/admin/system', icon: '⚙️', color: 'from-gray-500 to-gray-600' },
   ];
@@ -74,7 +74,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-green-50 to-blue-50">
       {/* Enhanced Sidebar */}
-      <aside className="w-80 bg-white/70 backdrop-blur-sm border-r border-white/20 shadow-xl">
+      <aside className="sticky top-0 w-80 max-h-max bg-white/70 backdrop-blur-sm border-r border-white/20 shadow-xl">
         <div className="p-6">
           {/* Enhanced Logo */}
           <div className="flex items-center gap-4 mb-8 p-4 bg-gradient-to-r from-green-100 to-blue-100 rounded-2xl">
@@ -125,11 +125,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 )}
               </Link>
             ))}
-          </nav>
-        </div>
-        
-        {/* Enhanced Footer */}
-        <div className="absolute bottom-6 left-6 right-6 space-y-4">
+            <div className="space-y-4">
           <div className="p-4 bg-gradient-to-r from-green-100 to-blue-100 rounded-2xl">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -156,6 +152,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             Logout
           </Button>
         </div>
+          </nav>
+        </div>
+        
+        {/* Enhanced Footer */}
+        
       </aside>
 
       {/* Enhanced Main Content */}
