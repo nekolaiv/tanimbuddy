@@ -45,10 +45,10 @@ export default function SMSTester() {
   };
 
   const sampleMessages = [
-    "Kailan magtanim ng palay?",
-    "May peste sa kamatis ko",
-    "Anong pataba para sa mais?",
-    "Kelan ang harvest season?"
+    "Maayong panahon karon para sa pagtanom og mais. Pag-andam sa yuta ug gamita ang organic fertilizer. Maayo pa!",
+    "ALERTO: Adda brown planthopper iti pagay. Ispray ti organic pesticide iti agsapa. Bantayan dagiti mula!",
+    "Reminder: Panahon na para sa 2nd application sa fertilizer sa inyong mais. Gamita ang 14-14-14. Salamat!",
+    "'Update: Presyo ng palay ₱25-28/kilo sa Cabanatuan market. Magandang timing para sa benta. Salamat!"
   ];
 
   const characterCount = message.length;

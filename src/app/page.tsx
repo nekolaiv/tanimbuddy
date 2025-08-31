@@ -21,12 +21,6 @@ export default function LandingPage() {
             
             <div className="flex items-center gap-4">
               <Link 
-                href="/dashboard" 
-                className="text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                Dashboard
-              </Link>
-              <Link 
                 href="/admin/login"
                 className="bg-green-100 text-green-700 px-4 py-2 rounded-lg hover:bg-green-200 transition-colors"
               >
@@ -73,14 +67,8 @@ export default function LandingPage() {
             </div>
             
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link href="/dashboard">
-                <Button size="lg" className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
-                  <span className="mr-2 text-xl">🚀</span>
-                  View System Dashboard
-                </Button>
-              </Link>
               <Link href="/admin/login">
-                <Button size="lg" variant="outline" className="border-2 border-green-200 hover:bg-green-50">
+                <Button size="lg" className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
                   <span className="mr-2 text-xl">🔐</span>
                   Admin Panel Demo
                 </Button>
@@ -226,7 +214,6 @@ export default function LandingPage() {
           </div>
           <p className="text-gray-600 mb-4">Powered by BantayANI • Made for Filipino Farmers</p>
           <div className="flex justify-center gap-6 text-sm text-gray-500">
-            <Link href="/dashboard" className="hover:text-gray-700">Dashboard</Link>
             <Link href="/admin" className="hover:text-gray-700">Admin Panel</Link>
             <span>v1.0</span>
           </div>
