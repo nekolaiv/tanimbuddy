@@ -4,8 +4,6 @@ import { DatabaseService } from '@/lib/database';
 
 export async function GET(request: NextRequest) {
   try {
-    const stats = await DatabaseService.getFarmerStats();
-    const intentAnalytics = await DatabaseService.getIntentAnalytics();
     
     // Add fallback for empty database
     const mockStats = {
