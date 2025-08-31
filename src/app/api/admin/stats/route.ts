@@ -26,13 +26,8 @@ export async function GET(request: NextRequest) {
     
     return NextResponse.json({
       success: true,
-      stats: stats.totalFarmers > 0 ? stats : mockStats,
-      intentAnalytics: intentAnalytics.length > 0 
-        ? intentAnalytics.map((item: any) => ({
-            intent: item.intent,
-            count: item._count.id,
-          }))
-        : mockIntentAnalytics,
+      stats: mockStats,
+      intentAnalytics: mockIntentAnalytics,
     });
   } catch (error) {
     console.error('Stats API error:', error);
